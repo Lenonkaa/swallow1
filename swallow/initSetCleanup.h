@@ -5,7 +5,7 @@
 
 
 #define LIMIT_STARS 100
-#define LIMIT_HUNTERS 10
+#define LIMIT_HUNTERS 20
 
 #define LEVEL_BONUS_MULTIPLIER 100
 

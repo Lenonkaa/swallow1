@@ -94,7 +94,7 @@ void load_config_score(FILE* file, gameConfig* cfg, int n_parameters_toread) {
     char key[50];
     float value;
     if (!file) {
-        printf("Blad: Nie mozna otworzyc pliku %s\n", file);
+        printf("Blad: Nie mozna otworzyc pliku\n");
         return;
     }
     for (int i = 0; i < n_parameters_toread; i++) {
@@ -149,7 +149,7 @@ void load_config_swallow(FILE* file, gameConfig* cfg, int n) {
             else if (strcmp(key, "MAX_SPEED") == 0) cfg->swallow_speed_max = static_cast<float>(value);
         }
     }
-    cfg->swallow_speed_diff = (cfg->swallow_speed_max - cfg->swallow_speed_min) / NUMBER_SPEED_LEVELS;
+    cfg->swallow_speed_diff = (cfg->swallow_speed_max - cfg->swallow_speed_min) / (NUMBER_SPEED_LEVELS-1);
 }
 
 void load_config_hunters(FILE* file, gameConfig* cfg, int n) {
@@ -162,6 +162,7 @@ void load_config_hunters(FILE* file, gameConfig* cfg, int n) {
             }
             else if (strcmp(key, "MAX_HUNTERS") == 0) {
                 cfg->max_hunters = (int)value;
+                cfg->current_max_hunters = cfg->max_hunters;
             }
             else if (strcmp(key, "ESCALATION_TIME") == 0) cfg->escalation_interval_seconds = (int)value;
             else if (strcmp(key, "ESCALATION_HUNTERS") == 0) cfg->escalation_max_hunters = (int)value;
@@ -170,14 +171,18 @@ void load_config_hunters(FILE* file, gameConfig* cfg, int n) {
             else if (strcmp(key, "TYPE") == 0) {
                 int type = (int)value; // Typ 0, 1 lub 2 (H_STANDARD, H_BIG, H_FAST)
 
-                for (int j = 0; j < 6; j++) {
+                for (int j = 0; j < 8; j++) {
                     if (fscanf(file, "%s %f", key, &value) != EOF) {
                         if (strcmp(key, "ALLOWED") == 0)
                             cfg->hunter_types[type].type_allowed = (int)value;
                         else if (strcmp(key, "SPEED") == 0)
                             cfg->hunter_types[type].speed = static_cast<float>(value);
-                        else if (strcmp(key, "BOUNCES_LIMIT") == 0)
+                        else if (strcmp(key, "INITIAL_BOUNCES") == 0)
                             cfg->hunter_types[type].hunter_bounces = (int)value;
+                        else if (strcmp(key, "DAMAGE") == 0) 
+                            cfg->hunter_types[type].damage = (int)value;
+                        else if (strcmp(key, "DASH_SPEED") == 0) 
+                            cfg->hunter_types[type].dash_speed = value;
                         else if (strcmp(key, "WIDTH") == 0)
                             cfg->hunter_types[type].size.width = (int)value;
                         else if (strcmp(key, "HEIGHT") == 0)

@@ -96,7 +96,7 @@ void draw_status_bar(const swallow* player, const gameContext* ctx, const gameCo
     mvprintw(status_y + 1, 2, "PLAYER: SWALLOW-1");
     mvprintw(status_y + 1, 30, "LIFE FORCE: %d%%", player->life);
     mvprintw(status_y + 1, 60, "SPEED LEVEL: %d/%d", player->speed_lvl, NUMBER_SPEED_LEVELS);
-    mvprintw(status_y + 1, 90, "HUNTERS: %d", cfg->max_hunters);
+    mvprintw(status_y + 1, 90, "HUNTERS: %d", cfg->current_max_hunters);
     mvprintw(status_y + 2, 2, "LEVEL: %d/%d", ctx->level + 1, NUMBER_LEVELS);
     mvprintw(status_y + 2, 30, "STARS: %d/%d", player->stars_collected, cfg->star_win);
     mvprintw(status_y + 2, 60, "SCORE: %d", player->score);
@@ -136,7 +136,7 @@ void draw_swallow(const swallow* player) {
 
 
 void draw_hunters(const hunter hunters[], const gameConfig* cfg) {
-    for (int i = 0; i < cfg->max_hunters; i++) {
+    for (int i = 0; i < cfg->current_max_hunters; i++) {
         if (hunters[i].active) {
 
 			attron(COLOR_PAIR(hunters[i].color_pair)); //| A_BOLD) - ale są jaśniejsze;

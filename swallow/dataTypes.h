@@ -10,7 +10,7 @@
 #include <string.h>
 
 
-#define NUMBER_LEVELS 1
+#define NUMBER_LEVELS 3
 #define NUMBER_SPEED_LEVELS 5
 
 
@@ -96,6 +96,8 @@ typedef struct {
     int damage;
     float speed;
 
+    float dash_speed;
+
     int hunter_bounces;
     int color_pair;
 
@@ -121,10 +123,10 @@ typedef struct {
     float swallow_speed_diff;
 
 
-
     float hunter_speed;//
 
     int hunter_bounces;//
+
 
     int max_hunters;
     int allowed_hunters;
@@ -178,6 +180,9 @@ typedef struct{
     int escalation_interval_seconds; // Co ile sekund trudność rośnie
     int escalation_max_hunters;    // O ile zwiększyć max_hunters
     int escalation_hunters_bounces;
+
+    int escalation_steps;
+    int current_max_hunters;
 
     //
 

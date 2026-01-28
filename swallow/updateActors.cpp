@@ -1,19 +1,9 @@
-#include "updateActors.h"
+﻿#include "updateActors.h"
 
 
 #include "initSetCleanup.h"
 #include "collisions_hMovement.h"
 
-
-enum walls{
-    TOP_WALL = 0,
-    BOTTOM_WALL,
-    LEFT_WALL,
-    RIGHT_WALL = 3
-};
-
-
-#define STARS_VELOCITY_FALLING 0.2f
 
 
 void actors_movement_and_collisions(swallow* player, hunter hunters[], star stars[], gameContext* context, gameConfig* cfg) {
@@ -123,8 +113,12 @@ void swallow_dont_go_beyond_screen(int max_w, int max_h, swallow* player) {
 
 
 
-void update_hunters(hunter hunters[], const swallow* player, const gameContext* ctx, const gameConfig* cfg) {
-    for (int i = 0; i < cfg->max_hunters; i++) {
+void update_hunters(hunter hunters[], const swallow* player, const gameContext* ctx, gameConfig* cfg) {
+    
+    hunters_escalation(ctx, cfg);
+
+    
+    for (int i = 0; i < cfg->current_max_hunters; i++) {
 
         if (!hunters[i].active) {
             float probability = cfg->spawn_probability_hunters;
@@ -140,6 +134,20 @@ void update_hunters(hunter hunters[], const swallow* player, const gameContext* 
     }
 }
 
+void hunters_escalation(const gameContext* ctx, gameConfig* cfg) {
+
+    if (cfg->escalation_interval_seconds > 0) {
+        cfg->escalation_steps = (int)(ctx->world_time / cfg->escalation_interval_seconds);
+    }
+
+
+    cfg->current_max_hunters = cfg->max_hunters + (cfg->escalation_steps * cfg->escalation_max_hunters);
+
+    // LIMIT_HUNTERS (initSetCleanup.h)
+    if (cfg->current_max_hunters > LIMIT_HUNTERS) cfg->current_max_hunters = LIMIT_HUNTERS;
+}
+
+
 
 
 
@@ -151,6 +159,8 @@ void hunter_activate(int i, hunter hunters[], const swallow* player, const gameC
     reset_hunter(i, hunters, cfg);
 
     choose_hunter_type(i, hunters, cfg);
+
+    hunters[i].bounces_left += (cfg->escalation_steps * cfg->escalation_hunters_bounces); //escalating difficulty - new get more bounces
 
     hunter_choose_start_wall(i, hunters, ctx);
 
@@ -201,6 +211,12 @@ void hunter_choose_start_wall(int i, hunter hunters[], const gameContext* ctx) {
 void choose_hunter_type(int i, hunter hunters[], const gameConfig* cfg) {
     //hunter type choice
 
+
+    if (!any_hunter_type_allowed_check(cfg)) {
+        hunters[i].active = false;
+        return;
+    }
+   
     int type_roll;
 
     do {
@@ -231,6 +247,19 @@ void choose_hunter_type(int i, hunter hunters[], const gameConfig* cfg) {
     }
 }
 
+bool any_hunter_type_allowed_check(const gameConfig* cfg) {
+    bool any_allowed = false;
+    for (int t = 0; t < 3; t++) { // Mamy 3 typy: H_STANDARD, H_BIG, H_FAST
+        if (cfg->hunter_types[t].type_allowed == 1) {
+            any_allowed = true;
+            break;
+        }
+    }
+    return any_allowed;
+
+    
+
+}
 
 void set_hunter_basedon_type(int i, hunter hunters[], const gameConfig* cfg) {
 
@@ -242,6 +271,7 @@ void set_hunter_basedon_type(int i, hunter hunters[], const gameConfig* cfg) {
     hunters[i].color_pair = cfg->hunter_types[type].color_pair;
     hunters[i].damage = cfg->hunter_types[type].damage;
     hunters[i].speed = cfg->hunter_types[type].speed; 
+    hunters[i].dash_speed = cfg->hunter_types[type].dash_speed;
     hunters[i].bounces_left = cfg->hunter_types[type].hunter_bounces;
 
    // strcpy(hunters[i].shape[0], cfg->hunter_types[type].shape[0]);

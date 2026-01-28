@@ -9,6 +9,16 @@ enum hunterType {
     H_FAST
 };
 
+enum walls {
+    TOP_WALL = 0,
+    BOTTOM_WALL,
+    LEFT_WALL,
+    RIGHT_WALL = 3
+};
+
+
+#define STARS_VELOCITY_FALLING 0.2f
+
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -43,7 +53,7 @@ void star_activate(star* star, bool* spawn, const gameContext* ctx);
 
 
 //HUNTERS
-void update_hunters(hunter hunters[], const swallow* player, const gameContext* ctx, const gameConfig* cfg);
+void update_hunters(hunter hunters[], const swallow* player, const gameContext* ctx, gameConfig* cfg);
 
 void hunter_activate(int i, hunter hunters[], const swallow* player, const gameContext* ctx, const gameConfig* cfg);
 
@@ -54,3 +64,6 @@ void choose_hunter_type(int i, hunter hunters[], const gameConfig* cfg);
 
 
 void set_hunter_basedon_type(int i, hunter hunters[], const gameConfig* cfg);
+bool any_hunter_type_allowed_check(const gameConfig* cfg);
+
+void hunters_escalation(const gameContext* ctx, gameConfig* cfg);

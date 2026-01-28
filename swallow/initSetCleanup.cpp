@@ -140,9 +140,15 @@ void init_stars(star* stars) {
 
 
 void reset_hunter(int i, hunter hunters[], const gameConfig* cfg) {
+    
+    /*
     hunters[i].bounces_left = cfg->hunter_bounces;
     hunters[i].damage = cfg->damage_value;
     hunters[i].speed = cfg->hunter_speed;
+    */
+    
+    hunters[i].has_dashed = false;
+    hunters[i].wait_before_dash = 0;
 }
 
 void init_hunters(hunter* hunters, const gameConfig* cfg) {

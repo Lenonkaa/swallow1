@@ -62,17 +62,26 @@ int main() {
 
 void game_running(swallow* player, hunter hunters[], star stars[], gameContext* context, gameConfig* cfg) {
 
+    clock_t level_start_time = clock();
+
     while (context->running) {
+
+        clock_t frame_start = clock();
 
         input(player, context);
 
         actors_movement_and_collisions(player, hunters, stars, context, cfg);
 
+        /*
         context->frame_count++;
-
         context->world_time = context->frame_count * (cfg->game_speed / 1000.0f); //game speed in ms : 1000 = seconds
-
         context->time_left = cfg->time_limit - context->world_time;
+        */
+
+        context->world_time = (float)(clock() - level_start_time) / CLOCKS_PER_SEC;
+        context->time_left = (float)cfg->time_limit - context->world_time;
+
+
 
         // checking life, time and score - when to end the game
 
@@ -80,6 +89,7 @@ void game_running(swallow* player, hunter hunters[], star stars[], gameContext* 
             context->level++;
             if (context->level < NUMBER_LEVELS) {
                 set_level(player, hunters, stars, context, cfg);
+                level_start_time = clock();
             }
             else {
                 context->win = true;
@@ -96,8 +106,12 @@ void game_running(swallow* player, hunter hunters[], star stars[], gameContext* 
 
         draw_game(player, stars, hunters, context, cfg);
 
+
+        int elapsed_ms = (int)((clock() - frame_start) * 1000 / CLOCKS_PER_SEC);
+        int wait = cfg->game_speed - elapsed_ms;
+
         // time control
-        napms(cfg->game_speed); // wait x miliseconds - bład, czeka np 20ms, ale minal tez czas na wykonanie ietarcji petli - POPRAWIC CZAS
+        napms(wait); // wait x miliseconds 
     }
 
 }
