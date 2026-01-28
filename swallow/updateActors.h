@@ -1,0 +1,56 @@
+#pragma once
+
+#include "dataTypes.h"
+
+
+enum hunterType {
+    H_STANDARD = 0,
+    H_BIG,
+    H_FAST
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+void actors_movement_and_collisions(swallow* player, hunter hunters[], star stars[], gameContext* context, gameConfig* cfg);
+
+
+bool spawn_probability_check(float probability);
+
+
+
+
+//SWALLOW
+void update_swallow(swallow* player, const gameContext* ctx, const gameConfig* cfg);
+
+void swallow_dont_go_beyond_screen(int max_w, int max_h, swallow* player);
+
+
+
+//STARS
+
+void star_spawn_mechanism(star* star, bool* spawn, const gameContext* ctx, const gameConfig* cfg);
+
+void star_falling_movement(star* star, const gameContext* ctx, const gameConfig* cfg);
+
+void update_stars(star stars[], const gameContext* ctx, const gameConfig* cfg);
+
+void star_activate(star* star, bool* spawn, const gameContext* ctx);
+
+
+
+
+
+//HUNTERS
+void update_hunters(hunter hunters[], const swallow* player, const gameContext* ctx, const gameConfig* cfg);
+
+void hunter_activate(int i, hunter hunters[], const swallow* player, const gameContext* ctx, const gameConfig* cfg);
+
+
+void hunter_choose_start_wall(int i, hunter hunters[], const gameContext* ctx);
+
+void choose_hunter_type(int i, hunter hunters[], const gameConfig* cfg);
+
+
+void set_hunter_basedon_type(int i, hunter hunters[], const gameConfig* cfg);

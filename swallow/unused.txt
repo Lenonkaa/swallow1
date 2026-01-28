@@ -1,0 +1,18 @@
+
+
+
+void init_levels(gameContext* context, gameConfig* cfg);
+
+
+
+void init_levels(gameContext* context, gameConfig* cfg) {
+    for (int i = 0; i < NUMBER_LEVELS; i++) {
+        context->levels[i].stars_to_collect = cfg->star_win + i * cfg->star_win_diff;
+        context->levels[i].max_hunters = cfg->max_hunters - (NUMBER_LEVELS - i - 1); //1 lvl - min hunters
+        if (context->levels[i].max_hunters < 3) {
+            context->levels[i].max_hunters = 3;
+        }
+        context->levels[i].hunter_bounces = cfg->hunter_bounces + i;
+        context->levels[i].hunter_speed = cfg->hunter_speed + i * cfg->hunter_speed_lvl_diff;
+    }
+}
